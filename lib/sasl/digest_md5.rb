@@ -44,7 +44,7 @@ module SASL
           @nc = next_nc
           response['nc'] = @nc
           @qop = c['qop'] || 'auth'
-          response['qop'] = @qop
+          response['qop'] = 'auth' #@qop
           response['digest-uri'] = preferences.digest_uri
           response['response'] = response_value(response['nonce'], response['nc'], response['cnonce'], response['qop'], response['realm'])
           ['response', encode_response(response)]
@@ -111,7 +111,7 @@ module SASL
     def encode_response(response)
       p :encode_response => response
       response.collect do |k,v|
-        if ['username', 'cnonce', 'digest-uri', 'authzid','realm','charset'].include? k
+        if ['username', 'cnonce', 'digest-uri', 'authzid','realm','qop'].include? k
           v.sub!('\\', '\\\\')
           v.sub!('"', '\\"')
           "#{k}=\"#{v}\""

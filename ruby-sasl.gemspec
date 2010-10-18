@@ -1,11 +1,11 @@
 Gem::Specification.new do |s|
-  s.name = 'ruby-sasl'
-  s.version = '0.0.3'
+  s.name = 'pyu-ruby-sasl'
+  s.version = '0.0.3.2'
 
-  s.authors = ['Stephan Maka']
-  s.date = '2009-02-07'
+  s.authors = ['Stephan Maka', 'Ping Yu']
+  s.date = '2010-10-18'
   s.description = 'Simple Authentication and Security Layer (RFC 4422)'
-  s.email = 'stephan@spaceboyz.net'
+  s.email = 'pyu@intridea.com'
   s.test_files = %w(spec/mechanism_spec.rb
                     spec/anonymous_spec.rb
                     spec/plain_spec.rb
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
                               lib/sasl.rb
                               README.markdown)
   s.has_rdoc = false
-  s.homepage = 'http://github.com/astro/ruby-sasl/'
+  s.homepage = 'http://github.com/pyu10055/ruby-sasl/'
   s.require_paths = ["lib"]
   s.summary = 'SASL client library'
 end
