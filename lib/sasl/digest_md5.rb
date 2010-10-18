@@ -46,7 +46,7 @@ module SASL
           @qop = c['qop'] || 'auth'
           response['qop'] = @qop
           response['digest-uri'] = preferences.digest_uri
-          response['response'] = response_value(response['nonce'], response['nc'], response['cnonce'], response['qop'])
+          response['response'] = response_value(response['nonce'], response['nc'], response['cnonce'], response['qop'], response['realm'])
           ['response', encode_response(response)]
         else
           rspauth_expected = response_value(@nonce, @nc, @cnonce, @qop, '')
@@ -136,8 +136,8 @@ module SASL
     
     ##
     # Calculate the value for the response field
-    def response_value(nonce, nc, cnonce, qop, a2_prefix='AUTHENTICATE')
-      a1_h = h("#{preferences.username}:#{preferences.realm}:#{preferences.password}")
+    def response_value(nonce, nc, cnonce, qop, realm, a2_prefix='AUTHENTICATE')
+      a1_h = h("#{preferences.username}:#{realm}:#{preferences.password}")
       a1 = "#{a1_h}:#{nonce}:#{cnonce}"
       if preferences.authzid
         a1 += ":#{preferences.authzid}"
