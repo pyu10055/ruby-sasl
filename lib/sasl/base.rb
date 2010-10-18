@@ -6,45 +6,23 @@ module SASL
   # You must derive from class Preferences and overwrite methods you
   # want to implement.
   class Preferences
-    ##
-    # Authorization identitiy ('username@domain' in XMPP)
-    def authzid
-      nil
+    attr_reader :config
+    # key in config hash
+    # authzid: Authorization identitiy ('username@domain' in XMPP)
+    # realm: Realm ('domain' in XMPP)
+    # digest-uri: : serv-type/serv-name | serv-type/host/serv-name ('xmpp/domain' in XMPP)
+    # username
+    # has_password?
+    # allow_plaintext?
+    # password
+    # want_anonymous?
+    
+    def initialize (config)
+      @config = {:has_password? => false, :allow_plaintext? => false, :want_anonymous => false}.merge.config.dup
     end
-
-    ##
-    # Realm ('domain' in XMPP)
-    def realm
-      raise AbstractMethod
-    end
-
-
-    ##
-    # digest-uri: serv-type/serv-name | serv-type/host/serv-name
-    # ('xmpp/domain' in XMPP)
-    def digest_uri
-      raise AbstractMethod
-    end
-
-    def username
-      raise AbstractMethod
-    end
-
-    def has_password?
-      false
-    end
-
-    def allow_plaintext?
-      false
-    end
-
-    def password
-      ''
-    end
-
-    def want_anonymous?
-      false
-    end
+    def method_missing(sym, *args, &block)
+      @config.send "[]", sym, &block
+    end    
   end
 
   ##
