@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'pyu-ruby-sasl'
-  s.version = '0.0.3.2'
+  s.version = '0.0.3.3'
 
   s.authors = ['Stephan Maka', 'Ping Yu']
   s.date = '2010-10-18'
