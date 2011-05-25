@@ -50,7 +50,7 @@ module SASL
           ['response', encode_response(response)]
         else
           rspauth_expected = response_value(@nonce, @nc, @cnonce, @qop, '')
-          p :rspauth_received=>c['rspauth'], :rspauth_expected=>rspauth_expected
+          #p :rspauth_received=>c['rspauth'], :rspauth_expected=>rspauth_expected
           if c['rspauth'] == rspauth_expected
             ['response', nil]
           else
@@ -104,12 +104,12 @@ module SASL
       end
       challenge[key] = value unless key == ''
       
-      p :decode_challenge => challenge
+      #p :decode_challenge => challenge
       challenge
     end
 
     def encode_response(response)
-      p :encode_response => response
+      #p :encode_response => response
       response.collect do |k,v|
         if ['username', 'cnonce', 'digest-uri', 'authzid','realm','qop'].include? k
           v.sub!('\\', '\\\\')
@@ -140,13 +140,13 @@ module SASL
     ##
     # Calculate the value for the response field
     def response_value(nonce, nc, cnonce, qop, realm, a2_prefix='AUTHENTICATE')
-      p :response_value => {:nonce=>nonce,
-        :cnonce=>cnonce,
-        :qop=>qop,
-        :username=>preferences.username,
-        :realm=>preferences.realm,
-        :password=>preferences.password,
-        :authzid=>preferences.authzid}
+      #p :response_value => {:nonce=>nonce,
+      #  :cnonce=>cnonce,
+      #  :qop=>qop,
+      #  :username=>preferences.username,
+      #  :realm=>preferences.realm,
+      #  :password=>preferences.password,
+      #  :authzid=>preferences.authzid}
       a1_h = h("#{preferences.username}:#{realm}:#{preferences.password}")
       a1 = "#{a1_h}:#{nonce}:#{cnonce}"
       if preferences.authzid
