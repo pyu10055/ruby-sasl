@@ -16,7 +16,8 @@ Gem::Specification.new do |s|
                               lib/sasl/plain.rb
                               lib/sasl/base64.rb
                               lib/sasl.rb
-                              README.markdown)
+                              README.markdown
+                              MIT-LICENSE)
   s.has_rdoc = false
   s.homepage = 'http://github.com/pyu10055/ruby-sasl/'
   s.require_paths = ["lib"]
