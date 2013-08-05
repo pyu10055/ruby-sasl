@@ -35,10 +35,9 @@ module SASL
             @nonce_count = 0
           end
           @nonce ||= c['nonce']
-          response['nonce'] = @nonce
-          response['charset'] = 'utf-8'
           response['username'] = preferences.username
           response['realm'] = c['realm'] || preferences.realm
+          response['nonce'] = @nonce
           @cnonce = generate_nonce unless defined? @cnonce
           response['cnonce'] = @cnonce
           @nc = next_nc
@@ -46,7 +45,9 @@ module SASL
           @qop = c['qop'] || 'auth'
           response['qop'] = 'auth' #@qop
           response['digest-uri'] = preferences.digest_uri
-          response['response'] = response_value(response['nonce'], response['nc'], response['cnonce'], response['qop'], response['realm'])
+          response['charset'] = 'utf-8'
+          algorithm = c['algorithm'] || "md5"
+          response['response'] = response_value(algorithm, response['nonce'], response['nc'], response['cnonce'], response['qop'], response['realm'])
           ['response', encode_response(response)]
         else
           rspauth_expected = response_value(@nonce, @nc, @cnonce, @qop, '')
@@ -111,7 +112,7 @@ module SASL
     def encode_response(response)
       #p :encode_response => response
       response.collect do |k,v|
-        if ['username', 'cnonce', 'digest-uri', 'authzid','realm','qop'].include? k
+        if ['username', 'cnonce', 'nonce', 'digest-uri', 'authzid','realm','qop'].include? k
           v.sub!('\\', '\\\\')
           v.sub!('"', '\\"')
           "#{k}=\"#{v}\""
@@ -139,7 +140,7 @@ module SASL
     
     ##
     # Calculate the value for the response field
-    def response_value(nonce, nc, cnonce, qop, realm, a2_prefix='AUTHENTICATE')
+    def response_value(algorithm, nonce, nc, cnonce, qop, realm, a2_prefix='AUTHENTICATE')
       #p :response_value => {:nonce=>nonce,
       #  :cnonce=>cnonce,
       #  :qop=>qop,
@@ -147,17 +148,30 @@ module SASL
       #  :realm=>preferences.realm,
       #  :password=>preferences.password,
       #  :authzid=>preferences.authzid}
-      a1_h = h("#{preferences.username}:#{realm}:#{preferences.password}")
-      a1 = "#{a1_h}:#{nonce}:#{cnonce}"
+      a1 = "#{preferences.username}:#{realm}:#{preferences.password}"
+      if algorithm.downcase == "md5-sess"
+          a1 = "#{h(a1)}:#{nonce}:#{cnonce}"
+      end
+
       if preferences.authzid
         a1 += ":#{preferences.authzid}"
       end
-      if qop && (qop.downcase == 'auth-int' || qop.downcase == 'auth-conf')
-        a2 = "#{a2_prefix}:#{preferences.digest_uri}:00000000000000000000000000000000"
-      else
-        a2 = "#{a2_prefix}:#{preferences.digest_uri}"
+
+      a2="#{a2_prefix}:#{preferences.digest_uri}"
+
+      qop = "missing" if not qop
+
+      case qop.downcase
+      when "auth-int", "auth-conf"
+        a2 = "#{a2}:00000000000000000000000000000000"
       end
-      hh("#{hh(a1)}:#{nonce}:#{nc}:#{cnonce}:#{qop}:#{hh(a2)}")
+
+      case qop.downcase
+      when "auth", "auth-int"
+        hh("#{hh(a1)}:#{nonce}:#{nc}:#{cnonce}:#{qop}:#{hh(a2)}")
+      when "missing"
+        hh("#{hh(a1)}:#{nonce}:#{hh(a2)}")
+      end
     end
 
     def next_nc
