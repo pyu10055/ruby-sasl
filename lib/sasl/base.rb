@@ -67,6 +67,10 @@ module SASL
                         Plain
                       when 'ANONYMOUS'
                         Anonymous
+                      when 'GSS-SPNEGO'
+                        GssSpnego
+                      when 'GSSAPI'
+                        GssApi
                       else
                         raise UnknownMechanism.new(mechanism)
                       end
