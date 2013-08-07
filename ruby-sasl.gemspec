@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
-  s.name = 'pyu-ruby-sasl'
-  s.version = '0.0.3.3'
+  s.name = 'luizluca-ruby-sasl'
+  s.version = '0.0.4.0'
 
-  s.authors = ['Stephan Maka', 'Ping Yu']
+  s.authors = ['Stephan Maka', 'Ping Yu', 'Luiz Angelo Daros de Luca']
   s.date = '2010-10-18'
   s.description = 'Simple Authentication and Security Layer (RFC 4422)'
   s.email = 'pyu@intridea.com'
@@ -12,13 +12,16 @@ Gem::Specification.new do |s|
                     spec/digest_md5_spec.rb)
   s.files = s.test_files + %w(lib/sasl/base.rb
                               lib/sasl/digest_md5.rb
+                              lib/sasl/gssapi.rb
+                              lib/sasl/gssspnego.rb
                               lib/sasl/anonymous.rb
                               lib/sasl/plain.rb
                               lib/sasl/base64.rb
+                              lib/sasl/socket.rb
                               lib/sasl.rb
                               README.markdown)
   s.has_rdoc = false
-  s.homepage = 'http://github.com/pyu10055/ruby-sasl/'
+  s.homepage = 'http://github.com/luizluca/ruby-sasl/'
   s.require_paths = ["lib"]
   s.summary = 'SASL client library'
 end
