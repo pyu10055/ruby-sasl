@@ -33,10 +33,18 @@ module SASL
         end
     end
 
-    require "openssl"
-
     module Buffering
+        begin
+          require 'openssl'
+          HasOpenSSL = true
+        rescue LoadError
+          # :stopdoc:
+          HasOpenSSL = false
+          # :startdoc:
+        end
+
         def self.extended(base)
+            raise LoadError.new("SASL::Buffering depends on OpenSSL::Buffering") if not HasOpenSSL
             class << base
                 alias_method :nonbuf_read,  :read
                 alias_method :nonbuf_write, :write
