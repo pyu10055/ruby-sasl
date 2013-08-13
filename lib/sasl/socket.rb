@@ -9,14 +9,15 @@ module SASL
 
         def write(buf)
             wbuf = wrap(buf)
-            @io.write([wbuf.size].pack("N"))
-            @io.write(wbuf)
+            @io.syswrite([wbuf.size].pack("N"))
+            @io.syswrite(wbuf)
         end
     
         def read
-            bsize=@io.read(4) 
+            bsize=@io.sysread(4)
+            raise "SASL Buffer size is nil!" if bsize==nil
             size=bsize.unpack("N")
-            buf=@io.read(size.first)
+            buf=@io.sysread(size.first)
             unwrap(buf)
         end
 
@@ -43,25 +44,37 @@ module SASL
           # :startdoc:
         end
 
+        # When an object is extended
         def self.extended(base)
-            raise LoadError.new("SASL::Buffering depends on OpenSSL::Buffering") if not HasOpenSSL
             class << base
+                Buffering.included(self)
+            end
+            base.initialize_buffering
+        end
+      
+        # When a class is extended
+        def self.included(base)
+            raise LoadError.new("SASL::Buffering depends on OpenSSL::Buffering") if not HasOpenSSL
+            base.class_eval do
                 alias_method :nonbuf_read,  :read
                 alias_method :nonbuf_write, :write
                 alias_method :nonbuf_close, :close
-            end
-            base.extend(OpenSSL::Buffering)
-            base.init_buffering
-        end
 
-        def init_buffering
-            @eof = false
-            @rbuffer = ""
-            @sync = @io.sync
+                # OpenSSL::Buffering replaces initialize. I should save it
+                alias_method :orig_initialize, :initialize
+                include OpenSSL::Buffering
+                alias_method :initialize_buffering, :initialize
+                public :initialize_buffering
+                
+                def initialize(*args)
+                    orig_initialize(*args)
+                    initialize_buffering
+                end
+            end
         end
 
         def sysread(size)
-            nonbuf_read
+            nonbuf_read   
         end
 
         def syswrite(buf)
