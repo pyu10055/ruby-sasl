@@ -17,23 +17,26 @@ module SASL
     def initialize(*args)
         raise LoadError.new("You need gssapi gem in order to use this class") if not HasGSSAPI
         super(*args)
+        preferences.config[:gss_opts] = {} if not preferences.config.include? :gss_opts    
+        preferences.config[:secure_layer] = false if preferences.config[:secure_layer]==nil
     end
 
     def start
         @state = :authneg
         (@service,@host)=preferences.digest_uri.split("/")
         @cli = GSSAPI::Simple.new(@host, @service)
-        tok = @cli.init_context
+        tok = @cli.init_context(nil, preferences.gss_opts)
         ['auth', tok ]
     end
 
     def receive(message_name, content)
-      if message_name == 'challenge'
+      case message_name
+      when 'challenge'
         case @state
         when :authneg
-            if @cli.init_context(content)
+            if @cli.init_context(content, preferences.gss_opts)
                 if false #http
-                    @state = :success
+                    @state = :waiting_result
                 else
                     @state = :ssfcap
                 end
@@ -42,24 +45,32 @@ module SASL
             end
             response = nil  
         when :ssfcap
-            tok = @cli.unwrap_message(content)
-            if not tok.size == 4
-                raise "token too short or long (#{tok.size}). Should be 4."
+            ssf = @cli.unwrap_message(content)
+            if not ssf.size == 4
+                raise "token too short or long (#{ssf.size}). Should be 4."
             end
 
-            # I dunno that to do with tok yet but sending it back is working
-            response = @cli.wrap_message(tok)
-            @state = :success
-            
-            securelayer_wrapper = proc {|io| SASL::GssSecureLayer.new(io,@cli) }
-            response = [response, securelayer_wrapper]
+            if not preferences.secure_layer 
+                # No security wanted
+                response = @cli.wrap_message(0)
+            else
+                response = @cli.wrap_message(ssf)
+            end
+            @state = :waiting_result
         else
             raise "Invalid state #{@state}. Did you called start method?"
         end
-        ['response', response]
+        result=['response', response]
+      when 'success'
+         result=super
+         if preferences.secure_layer 
+            securelayer_wrapper = proc {|io| SASL::GssSecureLayer.new(io,@cli) }
+            result=['securelayer_wrapper', securelayer_wrapper]
+         end
       else
-        super
+        result=super
       end
+      result
     end
   end
 
