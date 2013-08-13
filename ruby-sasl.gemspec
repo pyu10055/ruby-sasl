@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name = 'luizluca-ruby-sasl'
+  s.name = 'pyu-ruby-sasl'
   s.version = '0.0.4.0'
 
   s.authors = ['Stephan Maka', 'Ping Yu', 'Luiz Angelo Daros de Luca']
