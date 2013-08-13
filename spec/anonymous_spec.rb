@@ -1,5 +1,5 @@
 require 'sasl'
-require 'spec'
+require 'rspec'
 
 describe SASL::Anonymous do
   class MyAnonymousPreferences < SASL::Preferences
@@ -7,7 +7,7 @@ describe SASL::Anonymous do
       'bob'
     end
   end
-  preferences = MyAnonymousPreferences.new
+  preferences = MyAnonymousPreferences.new({})
 
   it 'should authenticate anonymously' do
     sasl = SASL::Anonymous.new('ANONYMOUS', preferences)

@@ -1,5 +1,5 @@
 require 'sasl'
-require 'spec'
+require 'rspec'
 
 describe SASL::Plain do
   class MyPlainPreferences < SASL::Preferences
@@ -16,7 +16,7 @@ describe SASL::Plain do
       's3cr3t'
     end
   end
-  preferences = MyPlainPreferences.new
+  preferences = MyPlainPreferences.new({})
 
   it 'should authenticate' do
     sasl = SASL::Plain.new('PLAIN', preferences)
