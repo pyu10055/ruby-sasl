@@ -14,6 +14,15 @@ describe SASL do
     sasl = SASL.new_mechanism('ANONYMOUS', SASL::Preferences.new({}))
     sasl.should be_an_instance_of SASL::Anonymous
   end
+  it 'should know GSSAPI' do
+    sasl = SASL.new_mechanism('GSSAPI', SASL::Preferences.new({}))
+    sasl.should be_an_instance_of SASL::GssApi
+  end
+  it 'should know GSS-SPNEGO' do
+    sasl = SASL.new_mechanism('GSS-SPNEGO', SASL::Preferences.new({}))
+    sasl.should be_an_instance_of SASL::GssSpnego
+  end
+
   it 'should choose ANONYMOUS' do
     preferences = SASL::Preferences.new({})
     class << preferences
