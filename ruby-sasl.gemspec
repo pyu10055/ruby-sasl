@@ -9,7 +9,8 @@ Gem::Specification.new do |s|
   s.test_files = %w(spec/mechanism_spec.rb
                     spec/anonymous_spec.rb
                     spec/plain_spec.rb
-                    spec/digest_md5_spec.rb)
+                    spec/digest_md5_spec.rb
+                    spec/socket.rb)
   s.files = s.test_files + %w(lib/sasl/base.rb
                               lib/sasl/digest_md5.rb
                               lib/sasl/gssapi.rb
