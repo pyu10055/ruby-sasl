@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
                     spec/anonymous_spec.rb
                     spec/plain_spec.rb
                     spec/digest_md5_spec.rb
-                    spec/socket.rb)
+                    spec/socket_spec.rb)
   s.files = s.test_files + %w(lib/sasl/base.rb
                               lib/sasl/digest_md5.rb
                               lib/sasl/gssapi.rb
