@@ -16,7 +16,7 @@ describe SASL::Plain do
       's3cr3t'
     end
   end
-  preferences = MyPlainPreferences.new Hash.new
+  preferences = MyPlainPreferences.new
 
   it 'should authenticate' do
     sasl = SASL::Plain.new('PLAIN', preferences)
