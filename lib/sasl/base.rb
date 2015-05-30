@@ -17,7 +17,7 @@ module SASL
     # password
     # want_anonymous?
     
-    def initialize (config)
+    def initialize (config = {})
       @config = {:has_password? => false, :allow_plaintext? => false, :want_anonymous? => false}.merge(config.dup)
     end
     def method_missing(sym, *args, &block)

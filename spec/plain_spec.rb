@@ -1,5 +1,5 @@
 require 'sasl'
-require 'spec'
+require 'rspec'
 
 describe SASL::Plain do
   class MyPlainPreferences < SASL::Preferences
@@ -20,20 +20,20 @@ describe SASL::Plain do
 
   it 'should authenticate' do
     sasl = SASL::Plain.new('PLAIN', preferences)
-    sasl.start.should == ['auth', "bob@example.com\000bob\000s3cr3t"]
-    sasl.success?.should == false
-    sasl.receive('success', nil).should == nil
-    sasl.failure?.should == false
-    sasl.success?.should == true
+    expect( sasl.start ).to eq ['auth', "bob@example.com\000bob\000s3cr3t"]
+    expect( sasl.success?).to eq false
+    expect( sasl.receive('success', nil)).to eq  nil
+    expect( sasl.failure? ).to eq false
+    expect( sasl.success? ).to eq true
   end
 
   it 'should recognize failure' do
     sasl = SASL::Plain.new('PLAIN', preferences)
-    sasl.start.should == ['auth', "bob@example.com\000bob\000s3cr3t"]
-    sasl.success?.should == false
-    sasl.failure?.should == false
-    sasl.receive('failure', 'keep-idiots-out').should == nil
-    sasl.failure?.should == true
-    sasl.success?.should == false
+    expect( sasl.start  ).to eq ['auth', "bob@example.com\000bob\000s3cr3t"]
+    expect( sasl.success? ).to eq  false
+    expect( sasl.failure? ).to eq false
+    expect( sasl.receive('failure', 'keep-idiots-out') ).to eq nil
+    expect( sasl.failure? ).to eq  true
+    expect( sasl.success? ).to eq  false
   end
 end
