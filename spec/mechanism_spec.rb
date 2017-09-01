@@ -4,15 +4,15 @@ require 'rspec'
 describe SASL do
   it 'should know DIGEST-MD5' do
     sasl = SASL.new_mechanism('DIGEST-MD5', SASL::Preferences.new({}))
-    sasl.should be_an_instance_of SASL::DigestMD5
+    expect( sasl ).to be_an_instance_of SASL::DigestMD5
   end
   it 'should know PLAIN' do
     sasl = SASL.new_mechanism('PLAIN', SASL::Preferences.new({}))
-    sasl.should be_an_instance_of SASL::Plain
+    expect( sasl ).to be_an_instance_of SASL::Plain
   end
   it 'should know ANONYMOUS' do
     sasl = SASL.new_mechanism('ANONYMOUS', SASL::Preferences.new({}))
-    sasl.should be_an_instance_of SASL::Anonymous
+    expect( sasl ).to be_an_instance_of SASL::Anonymous
   end
   it 'should know GSSAPI' do
     sasl = SASL.new_mechanism('GSSAPI', SASL::Preferences.new({}))
@@ -30,7 +30,7 @@ describe SASL do
         true
       end
     end
-    SASL.new(%w(PLAIN DIGEST-MD5 ANONYMOUS), preferences).should be_an_instance_of SASL::Anonymous
+    expect( SASL.new(%w(PLAIN DIGEST-MD5 ANONYMOUS), preferences) ).to be_an_instance_of SASL::Anonymous
   end
   it 'should choose DIGEST-MD5' do
     preferences = SASL::Preferences.new({})
@@ -39,7 +39,7 @@ describe SASL do
         true
       end
     end
-    SASL.new(%w(PLAIN DIGEST-MD5 ANONYMOUS), preferences).should be_an_instance_of SASL::DigestMD5
+    expect( SASL.new(%w(PLAIN DIGEST-MD5 ANONYMOUS), preferences) ).to be_an_instance_of SASL::DigestMD5
   end
   it 'should choose PLAIN' do
     preferences = SASL::Preferences.new({})
@@ -51,7 +51,7 @@ describe SASL do
         true
       end
     end
-    SASL.new(%w(PLAIN ANONYMOUS), preferences).should be_an_instance_of SASL::Plain
+    expect( SASL.new(%w(PLAIN ANONYMOUS), preferences)).to be_an_instance_of SASL::Plain
   end
   it 'should disallow PLAIN by default' do
     preferences = SASL::Preferences.new({})
@@ -60,6 +60,6 @@ describe SASL do
         true
       end
     end
-    lambda { SASL.new(%w(PLAIN ANONYMOUS), preferences) }.should raise_error(SASL::UnknownMechanism)
+    expect( lambda { SASL.new(%w(PLAIN ANONYMOUS), preferences) }).to raise_error(SASL::UnknownMechanism)
   end
 end
