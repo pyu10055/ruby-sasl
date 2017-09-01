@@ -1,4 +1,5 @@
 require 'digest/md5'
+require 'sasl/socket'
 
 module SASL
   ##
