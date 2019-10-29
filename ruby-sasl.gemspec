@@ -21,4 +21,5 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/pyu10055/ruby-sasl/'
   s.require_paths = ["lib"]
   s.summary = 'SASL client library'
+  s.license = 'MIT'
 end
